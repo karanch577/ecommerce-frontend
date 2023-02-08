@@ -3,8 +3,12 @@ import React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { useContext } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useParams } from 'react-router-dom'
+import CategoriesAdmin from '../conponents/CategoriesAdmin'
+import CouponsAdmin from '../conponents/CouponsAdmin'
+import ListProductsAdmin from '../conponents/ListProductsAdmin'
 import UserContext from '../context/user/UserContext'
+
 
 function AdminDashboard() {
     const { user, setUser } = useContext(UserContext)
@@ -15,10 +19,12 @@ function AdminDashboard() {
             axios.get("/user/getprofile")
             .then(({data}) => {
                 setUser(data?.user)
-                
+            })
+            .catch(({response}) => {
+                setIsLogout(!response.data.success);
             })
         }
-         else if(user?.role !== "ADMIN" || isLogout) {
+         if((user && user.role !== "ADMIN") || isLogout) {
             navigate("/")
         }
         
@@ -31,8 +37,19 @@ function AdminDashboard() {
         const { data } = await axios.get("/user/signout")
         setIsLogout(data.success)
     }
+
+    const {subpage} = useParams()
+    
+    function linkClasses(type=null) {
+        let classes = 'py-2 px-4 text-center rounded'
+        if(type === subpage) {
+            return `${classes} bg-red-500 text-gray-200`
+        }else {
+            return classes
+        }
+    }
   return (
-    <div className='bg-gray-200 h-screen'>
+    <div className='h-screen'>
         <nav className='flex justify-between max-w-6xl mx-auto py-6 px-4'>
          <Link to={"/"} className="icon flex items-center cursor-pointer ">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -48,10 +65,18 @@ function AdminDashboard() {
         </svg>
         </button>
         </nav>
-        <main className='max-w-6xl mx-auto my-6 flex py-3 px-6'>
-        <div className='w-[200px] border'>sidebar</div>
-        <div className='grow'>main</div>
-        </main>
+
+        <h2 className='capitalize block max-w-6xl mx-auto pl-24 text-3xl my-4'>Welcome back, {user?.name}</h2>
+        <div className='max-w-6xl mx-auto my-6 flex py-3 px-6 gap-4 h-[70vh]'>
+        <aside className='w-[200px] flex flex-col rounded p-[2px] bg-white'>
+            <Link className={linkClasses("products")} to={"/admin/dashboard/products"}>Products</Link>
+            <Link className={linkClasses("categories")} to={"/admin/dashboard/categories"}>Categories</Link>
+            <Link className={linkClasses("coupons")} to={"/admin/dashboard/coupons"}>Coupons</Link>
+        </aside>
+        <div className='grow'>
+            {subpage === "products" ? <ListProductsAdmin /> : subpage === "categories" ? <CategoriesAdmin /> : subpage === "coupons" ? <CouponsAdmin /> : ""}
+        </div>
+        </div>
     </div>
   )
 }

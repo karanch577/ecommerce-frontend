@@ -21,7 +21,10 @@ function App() {
         <Route path="/login" element={<Login />}/>
         <Route path="/register" element={<Register />}/>
         <Route path="/login/admin" element={<AdminLogin />}/>
-        <Route path="/admin/dashboard" element={<AdminDashboard />}/>
+        <Route path="/admin/dashboard" element={<AdminDashboard />}>
+          <Route path="/admin/dashboard/:subpage" element={<AdminDashboard />}/>
+          <Route path="/admin/dashboard/:subpage/:action" element={<AdminDashboard />}/>
+        </Route>
       </Routes>
     </UserProvider>
   );
