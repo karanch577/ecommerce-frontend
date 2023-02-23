@@ -52,7 +52,7 @@ function CategoriesAdmin() {
     </div>
     {/* list the categories */}
       <h2 className='text-2xl m-2 top-3'>Categories -</h2>
-    <div className='bg-white rounded h-[56vh] overflow-scroll'>
+    <div className='bg-white rounded h-[56vh] overflow-auto'>
       <div>
       {categories.length ? categories.map((el) => <div className='text-xl my-3 mx-5 flex items-center justify-between' key={el._id}>
       <div className="input grow">

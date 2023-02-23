@@ -7,6 +7,8 @@ import axios from "axios"
 import AdminLogin from "./pages/AdminLogin";
 import UserProvider from "./context/user/UserProvider";
 import AdminDashboard from "./pages/AdminDashboard";
+import Product from "./pages/Product";
+import ProductProvider from "./context/product/ProductProvider";
 
 axios.defaults.baseURL = "http://localhost:4000/api"
 axios.defaults.withCredentials = true
@@ -14,9 +16,11 @@ axios.defaults.withCredentials = true
 function App() {
   return (
     <UserProvider>
+      <ProductProvider>
       <Routes>
         <Route path="/" element={<Layout />} >
         <Route index element={<Home />}/>
+        <Route path="/product/:id" element={<Product />}/>
         </Route>
         <Route path="/login" element={<Login />}/>
         <Route path="/register" element={<Register />}/>
@@ -26,6 +30,7 @@ function App() {
           <Route path="/admin/dashboard/:subpage/:action" element={<AdminDashboard />}/>
         </Route>
       </Routes>
+      </ProductProvider>
     </UserProvider>
   );
 }

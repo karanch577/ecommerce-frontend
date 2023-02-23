@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import AddProduct from './AddProduct'
 
-function ListProducts() {
+function ListProductsAdmin() {
   const { action } = useParams()
   return (
     action !== "add" ? (
@@ -15,4 +15,4 @@ function ListProducts() {
   )
 }
 
-export default ListProducts
+export default ListProductsAdmin
