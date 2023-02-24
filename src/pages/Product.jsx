@@ -4,13 +4,15 @@ import { useContext } from 'react'
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import ImgCarousel from '../conponents/ImgCarousel'
+import SimilarProduct from '../conponents/SimilarProduct'
 import ProductContext from '../context/product/ProductContext'
 
 function Product() {
     const { id } = useParams()
 
-    const {setImgUrl} = useContext(ProductContext)
+    const {setImgUrl, setCategoryId} = useContext(ProductContext)
     const [product, setProduct] = useState(null)
+    const [showFullDesc, setShowFullDesc] = useState(false)
 
     useEffect(() => {
         if(!id) return
@@ -19,25 +21,52 @@ function Product() {
         .then(({data}) => {
             setProduct(data.product)
             setImgUrl(data?.product?.photos)
+            setCategoryId(data?.product?.collectionId)
         })
         .catch(err => console.log(err))
     }, [id])
   return (
-    <div className='flex max-w-7xl mx-auto mt-24 gap-10'>
+    <>
+     <div className='flex max-w-7xl mx-auto mt-24 gap-10 px-6'>
         <div className="img w-1/3">
             <ImgCarousel />
         </div>
-        <div className="info">
-            <h2 className='text-xl font-semibold'>{product?.name}</h2>
+        <div className="flex flex-col justify-between">
+            <div className="info">
+            <h2 className='text-xl font-semibold my-2'>{product?.name}</h2>
             <p>₹ {product?.price}</p>
-            <p className='line-clamp-6'>{product?.description}</p>
-            <div className="btn font-semibold">
-            <button>Add to Cart</button>
-            <Link to="/buy">Buy Now</Link>
+            <div className="desc">
+                {showFullDesc ? <div>
+                <p className='my-4'>{product?.description}</p>
+                {/* view less btn */}
+                <span className='float-right flex items-center font-semibold cursor-pointer' onClick={() => setShowFullDesc(prev => !prev)}>
+                view more
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+</svg>
+
+            </span>
+                </div> :
+                <div>
+                <p className='line-clamp-6 my-4'>{product?.description}</p>
+            {product?.description.length > 645 && <span className='float-right flex items-center font-semibold cursor-pointer' onClick={() => setShowFullDesc(prev => !prev)}>
+                view more
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 relative top-0.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+</svg>
+            </span> }
+                </div>}
+            </div>
+            </div>
+            <div className="btn font-semibold mb-6 flex justify-center">
+            <Link to="/cart" className='bg-blue-500 hover:bg-blue-700 text-white font-bold flex items-center justify-center w-32 h-10 rounded'>Add to Cart</Link>
+            <Link to="/buy" className='bg-blue-500 hover:bg-blue-700 text-white font-bold flex items-center justify-center w-32 h-10 rounded ml-12'>Buy Now</Link>
             </div>
         </div>
-        
     </div>
+    {/* similar product section */}
+    <SimilarProduct />
+    </>
   )
 }
 

@@ -15,10 +15,10 @@ function Home() {
     <div className='flex max-w-6xl mx-auto px-5 flex-wrap gap-6 justify-center mt-16'>
         {products.length > 0 && products.map(product => (
           <Link to={`/product/${product._id}`} key={product._id} className="w-[40%] md:w-[23%]">
-            <div className="img">
-              <img src={product.photos[0].secure_url} alt="product" className='rounded-xl object-cover aspect-square'/>
+            <div className="img bg-white flex justify-center">
+              <img src={product.photos[0].secure_url} alt="product" className='rounded-xl w-auto h-72'/>
             </div>
-            <h2 className='line-clamp-2 font-semibold'>{product.name}</h2>
+            <h2 className='line-clamp-2 font-semibold mt-6'>{product.name}</h2>
             <p>₹ {product.price}</p>
           </Link>
         ))}

@@ -1,0 +1,42 @@
+import axios from 'axios'
+import React from 'react'
+import { useContext } from 'react'
+import { useEffect } from 'react'
+import { useState } from 'react'
+import ProductContext from '../context/product/ProductContext'
+
+function SimilarProduct() {
+    const [products, setProducts] = useState([])
+    const {categoryId} = useContext(ProductContext)
+
+    useEffect(()=> {
+        if(!categoryId) return
+        axios.get(`/category/products/${categoryId}`)
+        .then(({data}) => setProducts(data.products))
+    }, [categoryId])
+  return (
+    <div className='max-w-7xl mx-auto mt-10 px-6'>
+        <h2 className='font-bold text-2xl'>Similar Products</h2>
+        <div className="cardContainer flex gap-8">
+        {products.length > 0 && products.map((product, index) => (
+            <div key={index} className="card w-[23%] cursor-pointer mt-6">
+                <div class=" rounded overflow-hidden shadow-lg">
+                <div className="img bg-white flex justify-center">
+                <img class="w-auto h-72" src={product.photos[0].secure_url} alt={product.name} />
+                </div>
+                <div class="px-6 py-4">
+                <h2 class="font-bold text-lg mb-2 line-clamp-3">{product.name}</h2>
+                <p class="text-gray-700 text-base">₹ 
+                {product.price}
+                </p>
+  </div>
+</div>
+            </div>
+        ))}
+        </div>
+       
+    </div>
+  )
+}
+
+export default SimilarProduct

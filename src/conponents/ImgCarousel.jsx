@@ -32,7 +32,9 @@ export default function ImgCarousel() {
         <div>
         {imgUrl?.length > 0 && imgUrl.map((url, index) => (
             <SwiperSlide key={index}>
-                <img src={url.secure_url} />
+              <div className="img max-h-[30rem]">
+                <img className="w-auto" src={url.secure_url} />
+              </div>
             </SwiperSlide>
 
         ))}

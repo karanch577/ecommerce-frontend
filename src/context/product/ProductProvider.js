@@ -4,10 +4,13 @@ import ProductContext from "./ProductContext";
 
 export default function ProductProvider(props) {
     const [imgUrl, setImgUrl] = useState(null)
+    const [categoryId, setCategoryId] = useState(null)
     return (
         <ProductContext.Provider value={{
             imgUrl,
-            setImgUrl
+            setImgUrl,
+            categoryId,
+            setCategoryId
         }}>
             {props.children}
         </ProductContext.Provider>
