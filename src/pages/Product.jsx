@@ -6,11 +6,14 @@ import { useParams, Link } from 'react-router-dom'
 import ImgCarousel from '../conponents/ImgCarousel'
 import SimilarProduct from '../conponents/SimilarProduct'
 import ProductContext from '../context/product/ProductContext'
+import UserContext from '../context/user/UserContext'
 
 function Product() {
     const { id } = useParams()
 
     const {setImgUrl, setCategoryId} = useContext(ProductContext)
+    const {cart, setCart} = useContext(UserContext)
+
     const [product, setProduct] = useState(null)
     const [showFullDesc, setShowFullDesc] = useState(false)
 
@@ -25,6 +28,24 @@ function Product() {
         })
         .catch(err => console.log(err))
     }, [id])
+
+    // handle add to cart 
+    function handleCart() {
+        // check if the product already exist
+        const existingProduct = cart.find(ele => ele?.item._id === product._id)
+        // if the product exist increase the count
+        if(existingProduct) {
+            const updatedCart = cart.map(ele => (
+                ele.item._id === product._id ? {
+                    ...ele,
+                    count: ele.count + 1
+                } : ele
+            ))
+            setCart(updatedCart)
+        } else {
+            setCart((prev) => [...prev, {item: product, count: 1}])
+        }
+    }
   return (
     <>
      <div className='flex max-w-7xl mx-auto mt-24 gap-10 px-6'>
@@ -59,7 +80,7 @@ function Product() {
             </div>
             </div>
             <div className="btn font-semibold mb-6 flex justify-center">
-            <Link to="/cart" className='bg-blue-500 hover:bg-blue-700 text-white font-bold flex items-center justify-center w-32 h-10 rounded'>Add to Cart</Link>
+            <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold flex items-center justify-center w-32 h-10 rounded' onClick={() => handleCart()}>Add to Cart</button>
             <Link to="/buy" className='bg-blue-500 hover:bg-blue-700 text-white font-bold flex items-center justify-center w-32 h-10 rounded ml-12'>Buy Now</Link>
             </div>
         </div>

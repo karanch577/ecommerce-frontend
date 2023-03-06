@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useContext } from 'react'
 import UserContext from '../context/user/UserContext'
@@ -9,11 +9,11 @@ function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const [isError, setIsError] = useState(true)
+  const [isError, setIsError] = useState(false)
 
-//   const [redirect, setRedirect] = useState(false)
+const {setUser, redirectLocation, setIsLoggedIn} = useContext(UserContext)
 
-const {setUser} = useContext(UserContext)
+const navigate = useNavigate()
 
   const handleForm = async (e) => {
     e.preventDefault()
@@ -25,7 +25,12 @@ const {setUser} = useContext(UserContext)
         password
       })
       setUser(data)
-      
+      setIsLoggedIn(true)
+      if(redirectLocation) {
+        navigate(redirectLocation)
+      } else {
+        navigate("/dashboard")
+      }
     } catch (error) {
       if(!error.response.data.success) {
         setIsError(false)
@@ -43,11 +48,11 @@ const {setUser} = useContext(UserContext)
     </Link>
     <div>
       <form className='flex flex-col max-w-md p-5 mx-auto h-[80vh] justify-center' onSubmit={handleForm}>
-        {isError ? "" : <p className='text-right text-red-600'>* Incorrect credentials</p>}
+        {isError ? <p className='text-right text-red-600'>* Incorrect credentials</p> : ""}
         <h2 className='text-3xl mb-3'>Log in</h2>
-        <input className="my-3 p-2" type="email" placeholder='Enter Your Email'/>
-        <input className="my-3 p-2" type="password" placeholder='Enter Password'/>
-        <button className='cursor-pointer bg-slate-900 text-white w-20 text-center py-1 rounded mt-2' to={"/dashboard"}>Login</button>
+        <input className="my-3 p-2" type="email" placeholder='Enter Your Email' onChange={(e) => setEmail(e.target.value)}/>
+        <input className="my-3 p-2" type="password" placeholder='Enter Password' onChange={(e) => setPassword(e.target.value)}/>
+        <button className='cursor-pointer bg-slate-900 text-white w-20 text-center py-1 rounded mt-2' onClick={handleForm}>Login</button>
         <p className='text-right -mt-9'>Not registered? <Link to={"/register"} className="text-indigo-700">Create Account</Link></p>
       </form>
     </div>
